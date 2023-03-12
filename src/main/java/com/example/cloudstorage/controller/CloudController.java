@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,9 +31,9 @@ public class CloudController {
     }
 
     @PostMapping("/file")
-    public ResponseEntity<?> upload(@RequestHeader("auth-token") String authToken,
-                                    @RequestParam("filename") String fileName, MultipartFile file){
-        cloudService.uploadFile(authToken, file, fileName);
+    public ResponseEntity<?> upload(@NotNull @RequestPart MultipartFile file, @RequestHeader("auth-token") String authToken,
+                                    @RequestParam("filename") String fileName){
+        cloudService.uploadFile(file, authToken, fileName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

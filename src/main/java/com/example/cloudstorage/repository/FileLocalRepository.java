@@ -1,11 +1,10 @@
 package com.example.cloudstorage.repository;
 
-import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Repository
+//@Repository
 public interface FileLocalRepository {
     boolean saveFile(MultipartFile file, String fileName, String path) throws IOException;
 

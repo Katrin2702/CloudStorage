@@ -1,31 +1,43 @@
 version: '2.0'
 
 services:
+
   database:
+    container_name: mysql
     image: mysql:latest
-    container_name: 'database'
-    ports:
-      - "3306:3306"
-    volumes:
-        - /mysql_data:/var/lib/mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: mysql
       MYSQL_USERNAME: root
       MYSQL_PASSWORD: mysql
-      MYSQL_DATABASE: cloud
-      restart: on-failure
-
-  frontend:
-    build: 'frontend/'
-    image: 'frontend:1.0'
+    #      PGDATA: "/var/lib/postgresql/data/pgdata"
     ports:
-      - '8080:8080'
-      -
+      - "3306:3306"
+
   backend:
-    image: app
-    restart: on-failure
+    container_name: backend
+    build: ./
+    image: cloudapp:latest
+    restart: always
+    environment:
+      spring_datasource_url: jdbc:mysql://localhost:3306/mysql
+    ports:
+      - "8090:8090"
     depends_on:
       - database
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name:   frontend
+    image: cloudfront:latest
     ports:
-      - '8090:8090'
+      - "8080:8080"
+
+
+
+
+
 

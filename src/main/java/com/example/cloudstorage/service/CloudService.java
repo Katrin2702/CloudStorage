@@ -13,7 +13,7 @@ public interface CloudService {
 
     void renameFile(String token, String fileName, String newName);
 
-    void uploadFile(String token, MultipartFile file, String fileName);
+    void uploadFile(MultipartFile file, String token, String fileName);
 
     void deleteFile(String token, String fileName);
 }

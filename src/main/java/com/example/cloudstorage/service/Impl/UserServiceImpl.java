@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByLogin(String login) {
-        var user = userRepository.findByUsername(login)
+        var user = userRepository.findByEmail(login)
                 .orElseThrow(() -> new CloudServiceNotFoundException(format(USER_NOT_FOUND_LOGIN, login)));
         log.info("User: {} found by login: {}", user, login);
         return user;

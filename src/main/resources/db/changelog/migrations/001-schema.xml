@@ -77,21 +77,21 @@
 
     <changeSet id="insert_roles" author="e.kovalenko">
         <insert tableName="roles">
-            <column name="name" value="ROLE_USER"/>
+            <column name="role_name" value="ROLE_USER"/>
         </insert>
 
         <insert tableName="roles">
-            <column name="name" value="ROLE_ADMIN"/>
+            <column name="role_name" value="ROLE_ADMIN"/>
         </insert>
     </changeSet>
 
     <changeSet id="insert_users" author="e.kovalenko">
         <insert tableName="users">
             <column name="user_name" value="user"/>
-            <column name="email" value="user@email.com"/>
+            <column name="email" value="user@mail.com"/>
             <column name="first_name" value="Ivan"/>
             <column name="last_name" value="Ivanov"/>
-            <column name="password" value="password"/>
+            <column name="password" value="$2y$10$ucRxNm00UVAwLvc7BOWHHuSuRZaMGNItMqDajdLI8N2r.bSNO1xp2"/>
         </insert>
     </changeSet>
 
@@ -112,7 +112,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="username" type="VARCHAR(100)">
+            <column name="user_name" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
 

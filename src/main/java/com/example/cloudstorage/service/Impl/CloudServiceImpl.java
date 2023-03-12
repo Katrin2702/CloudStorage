@@ -12,6 +12,7 @@ import com.example.cloudstorage.service.CloudService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.cloudstorage.security.JwtTokenProvider.BEARER_LENGTH;
 import static java.lang.String.format;
 
 @Service
 @Slf4j
+@Primary
 public class CloudServiceImpl implements CloudService {
 
     @Value("${data.files.path}")
@@ -37,6 +38,7 @@ public class CloudServiceImpl implements CloudService {
     private final FileRepository repository;
     private final JwtTokenProvider tokenProvider;
     private final FileLocalRepository localRepository;
+
 
     @Autowired
     public CloudServiceImpl(FileRepository repository, JwtTokenProvider tokenProvider, FileLocalRepository localRepository) {
@@ -91,7 +93,7 @@ public class CloudServiceImpl implements CloudService {
     }
 
     @Override
-    public void uploadFile(String token, MultipartFile multipartFile, String fileName) {
+    public void uploadFile(MultipartFile multipartFile, String token, String fileName) {
         log.info("Uploading file by token=[{}] and filename=[{}]", token, fileName);
         var userName = getUserName(token);
         var fullPath = format(FULL_PATH, path, userName);
@@ -131,7 +133,7 @@ public class CloudServiceImpl implements CloudService {
     }
 
     private String getUserName(String token) {
-        return tokenProvider.getUserName(token.substring(BEARER_LENGTH));
+        return tokenProvider.getUserName(token);
     }
 
     private FileDTO convertFromFile(File file) {

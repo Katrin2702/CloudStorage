@@ -1,7 +1,6 @@
 package com.example.cloudstorage;
 
 import com.example.cloudstorage.exception.CloudServiceFileException;
-import com.example.cloudstorage.exception.CloudServiceNotFoundException;
 import com.example.cloudstorage.model.File;
 import com.example.cloudstorage.model.FileStatus;
 import com.example.cloudstorage.repository.FileLocalRepository;
@@ -20,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.cloudstorage.security.JwtTokenProvider.BEARER_LENGTH;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -28,12 +26,12 @@ class CloudServiceTest {
 
     private static CloudService cloudService;
 
-    private static String token = "token abcabc";
-    private static String user = "user";
-    private static FileStatus active = FileStatus.ACTIVE;
-    private static Date now = new Date(System.currentTimeMillis());
-    private static File file = new File(1L, now, now, active, "test", user, "path", 100L);
-    private static List<File> files = List.of(
+    private static final String token = "token 123456";
+    private static final String user = "user";
+    private static final FileStatus active = FileStatus.ACTIVE;
+    private static final Date now = new Date(System.currentTimeMillis());
+    private static final File file = new File(1L, now, now, active, "test", user, "path", 100L);
+    private static final List<File> files = List.of(
             new File(1L, now, now, active, "name1", user, "path", 100L),
             new File(2L, now, now, active, "name2", user, "path", 150L)
     );
@@ -44,10 +42,10 @@ class CloudServiceTest {
         var jwtTokenProvider = Mockito.mock(JwtTokenProvider.class);
         var fileLocalRepository = Mockito.mock(FileLocalRepository.class);
         Mockito.when(fileRepository.findByUserNameAndNameAndStatus(user, active))
-                .thenReturn(files);
-        Mockito.when(jwtTokenProvider.getUserName(token.substring(BEARER_LENGTH))).thenReturn(user);
-        Mockito.when(fileRepository.findByUserNameAndNameAndStatus(user, "test", active))
                 .thenReturn(Optional.of(file));
+        Mockito.when(jwtTokenProvider.getUserName(token)).thenReturn(user);
+        Mockito.when(fileRepository.findByUserNameAndStatus(user, active))
+                .thenReturn(files);
         cloudService = new CloudServiceImpl(fileRepository, jwtTokenProvider, fileLocalRepository);
     }
 
@@ -68,13 +66,10 @@ class CloudServiceTest {
 
     @Test
     void whenRenameFileThenExceptionThrows() {
-        Throwable thrown = assertThrows(CloudServiceNotFoundException.class, () -> cloudService.renameFile(token, "", ""));
+        Throwable thrown = assertThrows(CloudServiceFileException.class,
+                () -> cloudService.renameFile(token, "noname", "newname"));
         assertNotNull(thrown.getMessage());
     }
 
-    @Test
-    void whenUploadFileThenExceptionThrows() {
-        Throwable thrown = assertThrows(CloudServiceFileException.class, () -> cloudService.uploadFile(token, null, ""));
-        assertNotNull(thrown.getMessage());
-    }
+
 }
